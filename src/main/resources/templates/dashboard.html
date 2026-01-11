@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="light" lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bảng điều khiển Nhân sự</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+.material-symbols-outlined {
+font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined.fill {
+font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+</style>
+<script id="tailwind-config">
+tailwind.config = {
+darkMode: "class",
+theme: {
+extend: {
+colors: {
+"primary": "#137fec",
+"background-light": "#f6f7f8",
+"background-dark": "#101922",
+},
+fontFamily: {
+"display": ["Inter", "sans-serif"]
+},
+borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+},
+},
+}
+</script>
+</head>
+<body class="font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="flex w-64 flex-col gap-y-6 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAv086lnSGCzAqMcRf4jpQ9F04zYWPyOjy8Of7IBb6uCIMZDJ2iHpobrncb2F1ZxacG7RJmk5nf-UB3_YJV8TLWNiWf0pdwSGWGDPJUq4u7kfuK8YAQEBJMQnYo8rTMLnCIpvQoeBSGZU7LS6OjpIAH6f-Yf769XXikUU6UVQhJctLXL-nm_27geexGybVvQuJb2DVo5144aCH9e2yoAMqPsbusrU9Dk0qqZHKpp1GnlKCQx25vr4jwjowCWSxF6GQmMnU2HKQSbTo");'></div>
+<div class="flex flex-col">
+<h1 class="text-gray-900 dark:text-white text-base font-medium leading-normal">Admin HR</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">hr.admin@company.com</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary" href="/admin/dashboard">
+<span class="material-symbols-outlined fill">dashboard</span>
+<p class="text-sm font-medium leading-normal">Bảng điều khiển</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/users">
+<span class="material-symbols-outlined">person</span>
+<p class="text-sm font-medium leading-normal">Người dùng</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/roles">
+<span class="material-symbols-outlined">shield_person</span>
+<p class="text-sm font-medium leading-normal">Phân quyền</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/employees">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Nhân viên</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/departments">
+<span class="material-symbols-outlined">domain</span>
+<p class="text-sm font-medium leading-normal">Phòng ban</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/positions">
+<span class="material-symbols-outlined">work</span>
+<p class="text-sm font-medium leading-normal">Chức vụ</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/contracts">
+<span class="material-symbols-outlined">description</span>
+<p class="text-sm font-medium leading-normal">Hợp đồng</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/leaves">
+<span class="material-symbols-outlined">event_busy</span>
+<p class="text-sm font-medium leading-normal">Nghỉ phép</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/salary">
+<span class="material-symbols-outlined">payments</span>
+<p class="text-sm font-medium leading-normal">Lương</p>
+</a>
+</nav>
+<hr class="my-4 border-gray-200 dark:border-gray-700"/>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-gray-200" href="/admin/settings">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Cài đặt</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-red-600 dark:text-red-400" href="/logout">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Đăng xuất</p>
+</a>
+</div>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 p-8">
+<div class="max-w-7xl">
+<h2 class="text-gray-900 dark:text-white text-3xl font-bold mb-6">Bảng Điều Khiển</h2>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<div class="flex items-center justify-between mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tổng Nhân Viên</p>
+<span class="material-symbols-outlined text-primary">group</span>
+</div>
+<p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${totalEmployees}">0</p>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-green-500 text-sm">person</span>
+<p class="text-green-500 text-sm">Đang hoạt động</p>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<div class="flex items-center justify-between mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Nhân Viên Mới (Tháng này)</p>
+<span class="material-symbols-outlined text-green-500">person_add</span>
+</div>
+<p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${newEmployees}">0</p>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-blue-500 text-sm">calendar_month</span>
+<p class="text-blue-500 text-sm" th:text="'Tháng ' + ${#dates.format(#dates.createNow(), 'MM/yyyy')}">Tháng hiện tại</p>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<div class="flex items-center justify-between mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Phòng Ban</p>
+<span class="material-symbols-outlined text-purple-500">domain</span>
+</div>
+<p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${departmentCount}">0</p>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-purple-500 text-sm">apartment</span>
+<p class="text-purple-500 text-sm">Đang hoạt động</p>
+</div>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<div class="flex items-center justify-between mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Đơn Nghỉ Phép Chờ Duyệt</p>
+<span class="material-symbols-outlined text-yellow-500">pending_actions</span>
+</div>
+<p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${pendingLeaveRequests}">0</p>
+<div class="flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-yellow-500 text-sm">schedule</span>
+<p class="text-yellow-500 text-sm">Cần xử lý</p>
+</div>
+</div>
+</div>
+
+<!-- Row 2: Thêm thống kê -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<div class="flex items-center justify-between mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Chức Vụ</p>
+<span class="material-symbols-outlined text-orange-500">work</span>
+</div>
+<p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${positionCount}">0</p>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<div class="flex items-center justify-between mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Hợp Đồng</p>
+<span class="material-symbols-outlined text-cyan-500">description</span>
+</div>
+<p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${contractCount}">0</p>
+</div>
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<div class="flex items-center justify-between mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Tài Khoản User</p>
+<span class="material-symbols-outlined text-indigo-500">manage_accounts</span>
+</div>
+<p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${userCount}">0</p>
+</div>
+<div class="bg-gradient-to-r from-primary to-blue-600 rounded-xl p-6 text-white">
+<div class="flex items-center justify-between mb-2">
+<p class="text-white/80 text-sm font-medium">Hệ Thống HR</p>
+<span class="material-symbols-outlined">hub</span>
+</div>
+<p class="text-lg font-bold">Hoạt động tốt</p>
+<p class="text-white/70 text-sm mt-1">✓ Online 24/7</p>
+</div>
+</div>
+
+<!-- Charts Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+<!-- Department Distribution Chart -->
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Phân Bố Nhân Viên Theo Phòng Ban</h3>
+<div class="flex items-end justify-between h-64 gap-2 overflow-x-auto" th:if="${departmentStats != null and !departmentStats.isEmpty()}">
+<div th:each="dept, iterStat : ${departmentStats}" class="flex flex-col items-center gap-2 flex-1 min-w-[60px]">
+<div class="w-full rounded-t-lg transition-all hover:opacity-80" 
+     th:style="'height: ' + ${dept.heightPercent} + '%;'"
+     th:classappend="${iterStat.index % 5 == 0} ? 'bg-primary' : (${iterStat.index % 5 == 1} ? 'bg-primary/80' : (${iterStat.index % 5 == 2} ? 'bg-primary/60' : (${iterStat.index % 5 == 3} ? 'bg-primary/40' : 'bg-primary/70')))"></div>
+<p class="text-xs text-gray-600 dark:text-gray-400 text-center truncate w-full" th:text="${dept.name}">Phòng</p>
+<p class="text-sm font-bold text-gray-900 dark:text-white" th:text="${dept.count}">0</p>
+</div>
+</div>
+<div th:if="${departmentStats == null or departmentStats.isEmpty()}" class="flex items-center justify-center h-64 text-gray-500">
+<p>Chưa có dữ liệu phòng ban</p>
+</div>
+</div>
+
+<!-- Summary Stats -->
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Tổng Quan Hệ Thống</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-blue-600">group</span>
+<span class="text-gray-700 dark:text-gray-300">Tổng nhân viên</span>
+</div>
+<span class="font-bold text-blue-600" th:text="${totalEmployees}">0</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-purple-600">domain</span>
+<span class="text-gray-700 dark:text-gray-300">Phòng ban</span>
+</div>
+<span class="font-bold text-purple-600" th:text="${departmentCount}">0</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-orange-600">work</span>
+<span class="text-gray-700 dark:text-gray-300">Chức vụ</span>
+</div>
+<span class="font-bold text-orange-600" th:text="${positionCount}">0</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-cyan-600">description</span>
+<span class="text-gray-700 dark:text-gray-300">Hợp đồng</span>
+</div>
+<span class="font-bold text-cyan-600" th:text="${contractCount}">0</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-600">manage_accounts</span>
+<span class="text-gray-700 dark:text-gray-300">Tài khoản user</span>
+</div>
+<span class="font-bold text-indigo-600" th:text="${userCount}">0</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Activity Feed + Quick Links -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Activity Feed -->
+<div class="lg:col-span-2 bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Hoạt Động Gần Đây</h3>
+<div class="space-y-4">
+
+<!-- Nhân viên mới -->
+<div th:each="emp : ${recentEmployees}" class="flex items-start gap-4">
+<div class="bg-green-100 dark:bg-green-900/30 rounded-full p-2">
+<span class="material-symbols-outlined text-green-600 dark:text-green-400">person_add</span>
+</div>
+<div class="flex-1">
+<p class="text-gray-900 dark:text-white font-medium">Nhân viên mới được thêm vào</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm">
+<span th:text="${emp.employeeName}">Tên NV</span> - 
+<span th:text="${emp.department?.departmentName ?: 'Chưa phân phòng'}">Phòng ban</span>
+</p>
+<p class="text-gray-400 dark:text-gray-500 text-xs mt-1" th:if="${emp.createdAt != null}" 
+   th:text="${#temporals.format(emp.createdAt, 'dd/MM/yyyy HH:mm')}">Thời gian</p>
+</div>
+</div>
+
+<!-- Đơn nghỉ phép gần đây -->
+<div th:each="leave : ${recentLeaves}" class="flex items-start gap-4">
+<div th:classappend="${leave.status == 'Pending'} ? 'bg-yellow-100 dark:bg-yellow-900/30' : (${leave.status == 'Approved'} ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30')" 
+     class="rounded-full p-2">
+<span class="material-symbols-outlined" 
+      th:classappend="${leave.status == 'Pending'} ? 'text-yellow-600 dark:text-yellow-400' : (${leave.status == 'Approved'} ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400')">
+      event_available</span>
+</div>
+<div class="flex-1">
+<p class="text-gray-900 dark:text-white font-medium">
+<span th:if="${leave.status == 'Pending'}">Đơn nghỉ phép chờ duyệt</span>
+<span th:if="${leave.status == 'Approved'}">Đơn nghỉ phép đã duyệt</span>
+<span th:if="${leave.status == 'Rejected'}">Đơn nghỉ phép bị từ chối</span>
+</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm">
+<span th:text="${leave.employee?.employeeName}">Tên NV</span> - 
+<span th:text="${leave.leaveType}">Loại nghỉ</span>
+(<span th:text="${#temporals.format(leave.startDate, 'dd/MM')}">Từ</span> - 
+<span th:text="${#temporals.format(leave.endDate, 'dd/MM')}">Đến</span>)
+</p>
+<p class="text-gray-400 dark:text-gray-500 text-xs mt-1" th:if="${leave.createdAt != null}"
+   th:text="${#temporals.format(leave.createdAt, 'dd/MM/yyyy HH:mm')}">Thời gian</p>
+</div>
+</div>
+
+<!-- Nếu không có hoạt động -->
+<div th:if="${(recentEmployees == null or recentEmployees.isEmpty()) and (recentLeaves == null or recentLeaves.isEmpty())}" 
+     class="text-center text-gray-500 py-8">
+<span class="material-symbols-outlined text-4xl mb-2">inbox</span>
+<p>Chưa có hoạt động nào</p>
+</div>
+
+</div>
+</div>
+
+<!-- Quick Links -->
+<div class="bg-white dark:bg-background-dark rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Truy Cập Nhanh</h3>
+<div class="space-y-3">
+<a href="/admin/employees/create" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
+<div class="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-2">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400">person_add</span>
+</div>
+<p class="text-gray-900 dark:text-white font-medium">Thêm nhân viên</p>
+</a>
+<a href="/admin/contracts/create" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
+<div class="bg-green-100 dark:bg-green-900/30 rounded-lg p-2">
+<span class="material-symbols-outlined text-green-600 dark:text-green-400">description</span>
+</div>
+<p class="text-gray-900 dark:text-white font-medium">Tạo hợp đồng</p>
+</a>
+<a href="/admin/leave-requests" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
+<div class="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-2">
+<span class="material-symbols-outlined text-purple-600 dark:text-purple-400">event_available</span>
+</div>
+<p class="text-gray-900 dark:text-white font-medium">Duyệt nghỉ phép</p>
+</a>
+<a href="/admin/salary" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
+<div class="bg-yellow-100 dark:bg-yellow-900/30 rounded-lg p-2">
+<span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">payments</span>
+</div>
+<p class="text-gray-900 dark:text-white font-medium">Quản lý lương</p>
+</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body>
+</html>

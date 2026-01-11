@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{user-layout :: layout(~{::title}, 'profile', ~{::content})}">
+<head>
+    <title>Hồ sơ cá nhân</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Alert Messages -->
+    <div th:if="${successMessage}" class="mb-6 flex items-center gap-3 rounded-xl bg-green-50 border border-green-200 p-4 text-green-700">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span th:text="${successMessage}"></span>
+    </div>
+
+    <!-- Profile Header Card -->
+    <div class="bg-gradient-to-r from-primary to-blue-600 rounded-2xl p-6 mb-6 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full translate-y-1/2 -translate-x-1/2"></div>
+        </div>
+        <div class="relative flex flex-col md:flex-row items-center gap-6">
+            <div class="w-24 h-24 bg-white/20 backdrop-blur rounded-full flex items-center justify-center ring-4 ring-white/30">
+                <span class="material-symbols-outlined text-5xl">person</span>
+            </div>
+            <div class="text-center md:text-left flex-1">
+                <h1 class="text-2xl font-bold" th:text="${employee?.employeeName ?: 'Chưa cập nhật'}">Nguyễn Văn A</h1>
+                <p class="text-white/80 mt-1" th:text="${employee?.position?.positionName ?: 'Chưa có chức vụ'}">Nhân viên</p>
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-3">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-white/20 rounded-full text-sm">
+                        <span class="material-symbols-outlined text-base">apartment</span>
+                        <span th:text="${employee?.department?.departmentName ?: 'N/A'}">Phòng IT</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-white/20 rounded-full text-sm">
+                        <span class="material-symbols-outlined text-base">badge</span>
+                        <span th:text="${employee?.getMNV() ?: 'N/A'}">NV001</span>
+                    </span>
+                    <span th:if="${employee != null and employee.getIsActive()}" class="inline-flex items-center gap-1 px-3 py-1 bg-green-500/30 rounded-full text-sm">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        Đang làm việc
+                    </span>
+                </div>
+            </div>
+            <a th:href="@{/user/profile/edit}" class="flex items-center gap-2 px-5 py-2.5 bg-white text-primary rounded-xl text-sm font-medium hover:bg-white/90 transition">
+                <span class="material-symbols-outlined text-lg">edit</span>
+                Chỉnh sửa
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: Personal Info -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Thông tin cá nhân -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-600">person</span>
+                    </div>
+                    <h2 class="font-semibold text-gray-900 dark:text-white">Thông tin cá nhân</h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-gray-400 mt-0.5">mail</span>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Email</p>
+                                <p class="font-medium text-gray-900 dark:text-white" th:text="${employee?.email ?: 'Chưa cập nhật'}">email@company.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-gray-400 mt-0.5">call</span>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Số điện thoại</p>
+                                <p class="font-medium text-gray-900 dark:text-white" th:text="${employee?.phone ?: 'Chưa cập nhật'}">0123456789</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-gray-400 mt-0.5">wc</span>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Giới tính</p>
+                                <p class="font-medium text-gray-900 dark:text-white" th:text="${employee?.gender ?: 'Chưa cập nhật'}">Nam</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-gray-400 mt-0.5">cake</span>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Ngày sinh</p>
+                                <p class="font-medium text-gray-900 dark:text-white" th:text="${employee?.dateOfBirth != null ? #temporals.format(employee.dateOfBirth, 'dd/MM/yyyy') : 'Chưa cập nhật'}">01/01/1990</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 md:col-span-2">
+                            <span class="material-symbols-outlined text-gray-400 mt-0.5">home</span>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Địa chỉ</p>
+                                <p class="font-medium text-gray-900 dark:text-white" th:text="${employee?.address ?: 'Chưa cập nhật'}">123 Đường ABC, Quận 1, TP.HCM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin định danh -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-purple-600">id_card</span>
+                    </div>
+                    <h2 class="font-semibold text-gray-900 dark:text-white">Thông tin định danh</h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-gray-400 mt-0.5">credit_card</span>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Số CCCD</p>
+                                <p class="font-medium text-gray-900 dark:text-white" th:text="${employee?.getCCCD() ?: 'Chưa cập nhật'}">012345678901</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-gray-400 mt-0.5">badge</span>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase tracking-wide">Mã nhân viên</p>
+                                <p class="font-medium text-gray-900 dark:text-white" th:text="${employee?.getMNV() ?: 'Chưa cập nhật'}">NV001</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Work Info -->
+        <div class="space-y-6">
+            <!-- Thông tin công việc -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-green-600">work</span>
+                    </div>
+                    <h2 class="font-semibold text-gray-900 dark:text-white">Công việc</h2>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-gray-500 text-sm">Phòng ban</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" th:text="${employee?.department?.departmentName ?: 'N/A'}">Phòng IT</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-gray-500 text-sm">Chức vụ</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" th:text="${employee?.position?.positionName ?: 'N/A'}">Nhân viên</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-gray-500 text-sm">Ngày vào làm</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" th:text="${employee?.joinDate != null ? #temporals.format(employee.joinDate, 'dd/MM/yyyy') : 'N/A'}">01/01/2020</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-gray-500 text-sm">Trạng thái</span>
+                        <span th:if="${employee != null and employee.getIsActive()}" class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Đang làm việc</span>
+                        <span th:if="${employee == null or !employee.getIsActive()}" class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">Đã nghỉ việc</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin hợp đồng -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-indigo-600">description</span>
+                    </div>
+                    <h2 class="font-semibold text-gray-900 dark:text-white">Hợp đồng lao động</h2>
+                </div>
+                <div class="p-6 space-y-4" th:if="${contract != null}">
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-gray-500 text-sm">Loại hợp đồng</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" th:text="${contract.contractType ?: 'N/A'}">Hợp đồng chính thức</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-gray-500 text-sm">Ngày bắt đầu</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" th:text="${contract.startDate != null ? #temporals.format(contract.startDate, 'dd/MM/yyyy') : 'N/A'}">01/01/2020</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-gray-500 text-sm">Ngày kết thúc</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" th:text="${contract.endDate != null ? #temporals.format(contract.endDate, 'dd/MM/yyyy') : 'Không xác định'}">31/12/2025</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                        <span class="text-gray-500 text-sm">Thời hạn làm việc</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" 
+                              th:if="${contract.startDate != null and contract.endDate != null}"
+                              th:text="${T(java.time.temporal.ChronoUnit).MONTHS.between(contract.startDate, contract.endDate)} + ' tháng'">12 tháng</span>
+                        <span class="font-medium text-gray-900 dark:text-white text-sm" 
+                              th:if="${contract.startDate == null or contract.endDate == null}">Không xác định</span>
+                    </div>
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-gray-500 text-sm">Trạng thái HĐ</span>
+                        <span th:if="${contract.contractStatus == 'Active' || contract.contractStatus == 'Còn hiệu lực'}" 
+                              class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">Còn hiệu lực</span>
+                        <span th:if="${contract.contractStatus == 'Expired' || contract.contractStatus == 'Hết hạn'}" 
+                              class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">Hết hạn</span>
+                        <span th:if="${contract.contractStatus == 'Terminated' || contract.contractStatus == 'Đã chấm dứt'}" 
+                              class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">Đã chấm dứt</span>
+                        <span th:if="${contract.contractStatus != 'Active' && contract.contractStatus != 'Còn hiệu lực' && contract.contractStatus != 'Expired' && contract.contractStatus != 'Hết hạn' && contract.contractStatus != 'Terminated' && contract.contractStatus != 'Đã chấm dứt'}" 
+                              class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700" 
+                              th:text="${contract.contractStatus ?: 'N/A'}">N/A</span>
+                    </div>
+                </div>
+                <div class="p-6" th:if="${contract == null}">
+                    <p class="text-gray-500 text-sm text-center">Chưa có thông tin hợp đồng</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-orange-600">bolt</span>
+                    </div>
+                    <h2 class="font-semibold text-gray-900 dark:text-white">Thao tác nhanh</h2>
+                </div>
+                <div class="p-4 space-y-2">
+                    <a th:href="@{/user/profile/edit}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                        <span class="material-symbols-outlined text-primary">edit</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary">Cập nhật thông tin</span>
+                    </a>
+                    <a th:href="@{/user/change-password}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                        <span class="material-symbols-outlined text-primary">lock</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary">Đổi mật khẩu</span>
+                    </a>
+                    <a th:href="@{/user/salary}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                        <span class="material-symbols-outlined text-primary">payments</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary">Xem phiếu lương</span>
+                    </a>
+                    <a th:href="@{/user/leaves}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 transition group">
+                        <span class="material-symbols-outlined text-primary">event_busy</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-primary">Lịch sử nghỉ phép</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

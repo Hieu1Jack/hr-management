@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: layout(~{::title}, 'roles', ~{::content})}">
+<head>
+    <title th:text="${role?.roleId} == null ? 'Thêm Phân Quyền' : 'Sửa Phân Quyền'">Thêm Phân Quyền</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Page Header -->
+    <div class="flex flex-wrap justify-between gap-3 pb-4">
+        <div class="flex min-w-72 flex-col gap-2">
+            <h1 class="text-[#111418] dark:text-white text-3xl font-bold leading-tight" th:text="${role?.roleId} == null ? 'Thêm Phân Quyền Mới' : 'Sửa thông tin Phân Quyền'">Thêm Phân Quyền Mới</h1>
+            <p class="text-[#617589] dark:text-gray-400 text-base">Điền thông tin chi tiết để tạo phân quyền mới.</p>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-slate-800/50 p-6 rounded-xl shadow-sm">
+        <form th:action="${role?.roleId} != null ? @{/admin/roles/update} : @{/admin/roles/create}" th:object="${role}" method="post" class="flex flex-col gap-6">
+            <input type="hidden" th:field="*{roleId}" th:if="${role?.roleId} != null"/>
+
+            <div>
+                <h2 class="text-[#111418] dark:text-white text-xl font-bold pb-3 border-b border-gray-200 dark:border-gray-700">Thông Tin Phân Quyền</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-5">
+                    <!-- Role Name -->
+                    <div class="flex flex-col">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Tên Quyền <span class="text-red-500">*</span></label>
+                        <input class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-11 px-4 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" placeholder="VD: ADMIN, EMPLOYEE" th:field="*{roleName}" required/>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Gợi ý: ADMIN, EMPLOYEE, ACCOUNTANT, DEPARTMENT_HEAD</p>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="flex flex-col">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Trạng Thái</label>
+                        <select class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-11 px-4 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" th:field="*{isActive}">
+                            <option value="true">Hoạt động</option>
+                            <option value="false">Không hoạt động</option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="md:col-span-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Mô Tả</label>
+                        <textarea class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-24 px-4 py-3 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" placeholder="Nhập mô tả chi tiết về quyền này" th:field="*{description}"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <a class="flex items-center justify-center rounded-lg h-10 px-6 bg-gray-100 dark:bg-gray-700 text-[#111418] dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" th:href="@{/admin/roles}">Hủy</a>
+                <button type="submit" class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+                    <span th:text="${role?.roleId} == null ? 'Tạo Phân Quyền' : 'Lưu Phân Quyền'">Lưu Phân Quyền</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

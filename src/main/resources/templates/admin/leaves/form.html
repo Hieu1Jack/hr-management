@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: layout(~{::title}, 'leaves', ~{::content})}">
+<head>
+    <title th:text="${leaveRequest?.leaveId} == null ? 'Thêm Yêu Cầu Nghỉ Phép' : 'Sửa Yêu Cầu'">Thêm Yêu Cầu Nghỉ Phép</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Page Header -->
+    <div class="flex flex-wrap justify-between items-center gap-4 pb-4">
+        <div class="flex flex-col gap-2">
+            <h1 class="text-[#111418] dark:text-white text-3xl font-bold leading-tight" th:text="${leaveRequest?.leaveId} == null ? 'Thêm Yêu Cầu Mới' : 'Sửa Yêu Cầu'">Thêm Yêu Cầu Mới</h1>
+            <p class="text-[#617589] dark:text-gray-400 text-base">Tạo yêu cầu nghỉ phép cho nhân viên.</p>
+        </div>
+        <a th:href="@{/admin/leaves}" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-[#111418] dark:text-white text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600">
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+            Quay lại
+        </a>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white dark:bg-gray-800/50 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <form th:action="${leaveRequest?.leaveId} != null ? @{/admin/leave-requests/update} : @{/admin/leave-requests/create}" th:object="${leaveRequest}" method="post" class="flex flex-col gap-8">
+            <input type="hidden" th:field="*{leaveId}" th:if="${leaveRequest?.leaveId} != null"/>
+
+            <!-- Section: Thông tin Yêu Cầu -->
+            <div>
+                <h2 class="text-[#111418] dark:text-white text-lg font-bold leading-tight pb-3 border-b border-gray-200 dark:border-gray-700">Thông Tin Yêu Cầu</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-5">
+                    <!-- Employee -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium">Nhân Viên <span class="text-red-500">*</span></label>
+                        <select class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#111418] dark:text-white h-11 px-3 focus:ring-2 focus:ring-primary/50" th:field="*{employee}" required>
+                            <option value="">Chọn nhân viên</option>
+                            <option th:each="emp : ${employees}" th:value="${emp.employeeId}" th:text="${emp.employeeName}">Nguyễn Văn A</option>
+                        </select>
+                    </div>
+
+                    <!-- Leave Type -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium">Loại Phép <span class="text-red-500">*</span></label>
+                        <select class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#111418] dark:text-white h-11 px-3 focus:ring-2 focus:ring-primary/50" th:field="*{leaveType}" required>
+                            <option value="">Chọn loại phép</option>
+                            <option value="Phép Năm">Phép Năm</option>
+                            <option value="Ốm">Ốm</option>
+                            <option value="Không Lương">Không Lương</option>
+                        </select>
+                    </div>
+
+                    <!-- From Date -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium">Từ Ngày <span class="text-red-500">*</span></label>
+                        <input class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#111418] dark:text-white h-11 px-3 focus:ring-2 focus:ring-primary/50" type="date" th:field="*{startDate}" required/>
+                    </div>
+
+                    <!-- To Date -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium">Đến Ngày <span class="text-red-500">*</span></label>
+                        <input class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#111418] dark:text-white h-11 px-3 focus:ring-2 focus:ring-primary/50" type="date" th:field="*{endDate}" required/>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium">Trạng Thái</label>
+                        <select class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#111418] dark:text-white h-11 px-3 focus:ring-2 focus:ring-primary/50" th:field="*{status}">
+                            <option value="Chờ Duyệt">Chờ Duyệt</option>
+                            <option value="Đã Duyệt">Đã Duyệt</option>
+                            <option value="Bị Từ Chối">Bị Từ Chối</option>
+                        </select>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="md:col-span-2 flex flex-col gap-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium">Lý Do</label>
+                        <textarea class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-[#111418] dark:text-white h-24 px-3 py-2 focus:ring-2 focus:ring-primary/50" placeholder="Nhập lý do nghỉ phép" th:field="*{reason}"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <a class="flex items-center justify-center rounded-lg h-10 px-6 bg-gray-200 dark:bg-gray-700 text-[#111418] dark:text-white text-sm font-bold hover:bg-gray-300 dark:hover:bg-gray-600" th:href="@{/admin/leaves}">
+                    <span class="material-symbols-outlined mr-2">close</span>
+                    Hủy
+                </a>
+                <button type="submit" class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90">
+                    <span class="material-symbols-outlined mr-2">check</span>
+                    <span th:text="${leaveRequest?.leaveId} == null ? 'Tạo Yêu Cầu' : 'Lưu Yêu Cầu'">Lưu Yêu Cầu</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

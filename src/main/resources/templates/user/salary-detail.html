@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{user-layout :: layout(~{::title}, 'salary', ~{::content})}">
+<head>
+    <title>Chi tiết phiếu lương</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-4">
+            <a th:href="@{/user/salary}" class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Chi tiết phiếu lương</h1>
+                <p class="text-gray-500 text-sm" th:text="'Tháng ' + ${salary.month} + '/' + ${salary.year}">Tháng 1/2025</p>
+            </div>
+        </div>
+        <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
+            <span class="material-symbols-outlined text-lg">print</span>
+            In phiếu lương
+        </button>
+    </div>
+
+    <!-- Salary Card -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+        <!-- Employee Info -->
+        <div class="p-6 border-b border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary text-3xl">person</span>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-white" th:text="${salary.employee.employeeName}">Nguyễn Văn A</h2>
+                    <p class="text-sm text-gray-500" th:text="${salary.employee.position?.positionName ?: 'Nhân viên'}">Nhân viên</p>
+                    <p class="text-sm text-gray-400" th:text="${salary.employee.department?.departmentName ?: 'N/A'}">Phòng IT</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Salary Details -->
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Thu nhập -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-green-600">add_circle</span>
+                        Thu nhập
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                            <span class="text-gray-600 dark:text-gray-400">Lương cơ bản</span>
+                            <span class="font-medium text-gray-900 dark:text-white" th:text="${#numbers.formatDecimal(salary.baseSalary, 0, 'COMMA', 0, 'POINT') + ' đ'}">15,000,000 đ</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                            <span class="text-gray-600 dark:text-gray-400">Phụ cấp tăng ca</span>
+                            <span class="font-medium text-green-600" th:text="${#numbers.formatDecimal(salary.overtimePay, 0, 'COMMA', 0, 'POINT') + ' đ'}">2,000,000 đ</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                            <span class="text-gray-600 dark:text-gray-400">Thưởng</span>
+                            <span class="font-medium text-green-600" th:text="${#numbers.formatDecimal(salary.bonus ?: 0, 0, 'COMMA', 0, 'POINT') + ' đ'}">500,000 đ</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Khấu trừ -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-600">remove_circle</span>
+                        Khấu trừ
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                            <span class="text-gray-600 dark:text-gray-400">Bảo hiểm xã hội</span>
+                            <span class="font-medium text-red-600" th:text="${#numbers.formatDecimal((salary.deductions ?: 0) * 0.5, 0, 'COMMA', 0, 'POINT') + ' đ'}">100,000 đ</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                            <span class="text-gray-600 dark:text-gray-400">Thuế TNCN</span>
+                            <span class="font-medium text-red-600" th:text="${#numbers.formatDecimal((salary.deductions ?: 0) * 0.5, 0, 'COMMA', 0, 'POINT') + ' đ'}">100,000 đ</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-slate-700">
+                            <span class="text-gray-600 dark:text-gray-400">Tổng khấu trừ</span>
+                            <span class="font-medium text-red-600" th:text="${'-' + #numbers.formatDecimal(salary.deductions ?: 0, 0, 'COMMA', 0, 'POINT') + ' đ'}">-200,000 đ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Thông tin công -->
+            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-600">schedule</span>
+                    Thông tin chấm công
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white" th:text="${salary.workDays}">22</p>
+                        <p class="text-sm text-gray-500">Ngày công</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white" th:text="${salary.overtimeHours ?: 0}">8</p>
+                        <p class="text-sm text-gray-500">Giờ tăng ca</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
+                        <p class="text-sm text-gray-500">Ngày nghỉ phép</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-slate-700 rounded-lg p-4 text-center">
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
+                        <p class="text-sm text-gray-500">Ngày vắng</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Total -->
+            <div class="mt-6 pt-6 border-t-2 border-primary">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-semibold text-gray-900 dark:text-white">THỰC NHẬN</span>
+                    <span class="text-3xl font-bold text-primary" th:text="${#numbers.formatDecimal(salary.totalSalary, 0, 'COMMA', 0, 'POINT') + ' đ'}">17,300,000 đ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

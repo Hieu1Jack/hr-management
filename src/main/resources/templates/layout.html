@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(title, content)"
+      class="light" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">HR Management System</title>
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "primary-dark": "#0d5fb8",
+                        "secondary": "#764ba2",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "surface": "#ffffff",
+                        "surface-dark": "#1e293b",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "system-ui", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem", 
+                        "lg": "0.75rem", 
+                        "xl": "1rem", 
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+                        'hover': '0 10px 40px -10px rgba(0, 0, 0, 0.15)',
+                        'card': '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'pulse-soft': 'pulseSoft 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.7' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #137fec 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Card hover effects */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Button effects */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn-glow:hover::before {
+            left: 100%;
+        }
+        
+        /* Dropdown animation */
+        .dropdown-content {
+            transform-origin: top;
+            animation: dropdownOpen 0.2s ease-out;
+        }
+        @keyframes dropdownOpen {
+            0% {
+                opacity: 0;
+                transform: scaleY(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+        
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Gradient backgrounds */
+        .gradient-primary {
+            background: linear-gradient(135deg, #137fec 0%, #0d5fb8 100%);
+        }
+        .gradient-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .gradient-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .gradient-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        /* Icon containers */
+        .icon-container {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Notification badge */
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 18px;
+            height: 18px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200 min-h-screen flex flex-col">
+    <!-- Modern Navigation Bar -->
+    <header class="sticky top-0 z-50 w-full border-b border-gray-200/60 dark:border-gray-700/60 glass dark:bg-background-dark/90">
+        <div class="container mx-auto">
+            <nav class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center shadow-soft group-hover:shadow-hover transition-all duration-300">
+                        <span class="material-symbols-outlined text-white text-xl">hub</span>
+                    </div>
+                    <div class="hidden sm:block">
+                        <h1 class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">HR Management</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 -mt-0.5">Hệ thống quản lý nhân sự</p>
+                    </div>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-1">
+                    <a href="/" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">home</span>
+                            Trang Chủ
+                        </span>
+                    </a>
+                    <a href="#features" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">auto_awesome</span>
+                            Tính Năng
+                        </span>
+                    </a>
+                    <a href="#about" class="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">info</span>
+                            Giới Thiệu
+                        </span>
+                    </a>
+                </div>
+                
+                <!-- Right Side Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Theme Toggle (Optional) -->
+                    <button onclick="document.documentElement.classList.toggle('dark')" class="p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200">
+                        <span class="material-symbols-outlined text-xl dark:hidden">dark_mode</span>
+                        <span class="material-symbols-outlined text-xl hidden dark:block">light_mode</span>
+                    </button>
+                    
+                    <!-- Not Authenticated -->
+                    <div sec:authorize="!isAuthenticated()" class="flex items-center gap-2">
+                        <a href="/login" class="px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-all duration-200">
+                            Đăng Nhập
+                        </a>
+                        <a href="/admin" class="px-5 py-2.5 text-sm font-semibold bg-primary text-white rounded-lg hover:bg-primary-dark shadow-soft hover:shadow-hover btn-glow transition-all duration-300">
+                            Admin Panel
+                        </a>
+                    </div>
+                    
+                    <!-- Authenticated User -->
+                    <div sec:authorize="isAuthenticated()" class="relative" x-data="{ open: false }">
+                        <button onclick="this.parentElement.querySelector('.dropdown-menu').classList.toggle('hidden')" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
+                            <div class="w-9 h-9 gradient-secondary rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white text-lg">person</span>
+                            </div>
+                            <div class="hidden sm:block text-left">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white" sec:authentication="name">User</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Tài khoản</p>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400 text-lg">expand_more</span>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-menu hidden absolute right-0 mt-2 w-56 bg-white dark:bg-surface-dark rounded-xl shadow-hover border border-gray-200 dark:border-gray-700 py-2 dropdown-content">
+                            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                                <p class="text-sm font-semibold text-gray-900 dark:text-white" sec:authentication="name">User</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Quản lý tài khoản</p>
+                            </div>
+                            
+                            <div class="py-1" sec:authorize="hasRole('ADMIN')">
+                                <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary/5 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                                    Admin Panel
+                                </a>
+                            </div>
+                            
+                            <a href="/user/profile" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary/5 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">badge</span>
+                                Hồ Sơ Cá Nhân
+                            </a>
+                            <a href="/user/salary" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary/5 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">payments</span>
+                                Bảng Lương
+                            </a>
+                            <a href="/user/leave-request" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary/5 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">event_available</span>
+                                Đơn Nghỉ Phép
+                            </a>
+                            
+                            <div class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                <form th:action="@{/logout}" method="post">
+                                    <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">logout</span>
+                                        Đăng Xuất
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden p-2 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-lg transition-all duration-200">
+                        <span class="material-symbols-outlined text-2xl">menu</span>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-gray-700 py-4 px-4 bg-white dark:bg-background-dark">
+                <div class="flex flex-col gap-2">
+                    <a href="/" class="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-primary/5 hover:text-primary rounded-lg transition-colors">
+                        <span class="material-symbols-outlined">home</span>
+                        Trang Chủ
+                    </a>
+                    <a href="#features" class="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-primary/5 hover:text-primary rounded-lg transition-colors">
+                        <span class="material-symbols-outlined">auto_awesome</span>
+                        Tính Năng
+                    </a>
+                    <a href="#about" class="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-primary/5 hover:text-primary rounded-lg transition-colors">
+                        <span class="material-symbols-outlined">info</span>
+                        Giới Thiệu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+            <th:block th:replace="${content}"></th:block>
+        </div>
+    </main>
+
+    <!-- Modern Footer -->
+    <footer class="bg-gray-900 dark:bg-black text-gray-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Main Footer -->
+            <div class="py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white text-xl">hub</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">HR Management</h2>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-md">
+                        Hệ thống quản lý nhân sự hiện đại, giúp doanh nghiệp tối ưu hóa quy trình quản lý nhân viên, chấm công, lương thưởng và nhiều hơn nữa.
+                    </p>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-facebook-f text-gray-400 hover:text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-twitter text-gray-400 hover:text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-linkedin-in text-gray-400 hover:text-white"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fab fa-github text-gray-400 hover:text-white"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Liên Kết Nhanh</h3>
+                    <ul class="space-y-3">
+                        <li><a href="/" class="text-gray-400 hover:text-primary text-sm transition-colors">Trang Chủ</a></li>
+                        <li><a href="/login" class="text-gray-400 hover:text-primary text-sm transition-colors">Đăng Nhập</a></li>
+                        <li><a href="/admin" class="text-gray-400 hover:text-primary text-sm transition-colors">Admin Panel</a></li>
+                        <li><a href="#features" class="text-gray-400 hover:text-primary text-sm transition-colors">Tính Năng</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Liên Hệ</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-2 text-gray-400 text-sm">
+                            <span class="material-symbols-outlined text-lg text-primary">location_on</span>
+                            123 Đường ABC, TP. HCM
+                        </li>
+                        <li class="flex items-center gap-2 text-gray-400 text-sm">
+                            <span class="material-symbols-outlined text-lg text-primary">mail</span>
+                            contact@hrmanagement.vn
+                        </li>
+                        <li class="flex items-center gap-2 text-gray-400 text-sm">
+                            <span class="material-symbols-outlined text-lg text-primary">phone</span>
+                            (028) 1234-5678
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 py-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-gray-500 text-sm">© 2024 HR Management System. All rights reserved.</p>
+                    <div class="flex gap-6">
+                        <a href="#" class="text-gray-500 hover:text-primary text-sm transition-colors">Chính sách bảo mật</a>
+                        <a href="#" class="text-gray-500 hover:text-primary text-sm transition-colors">Điều khoản sử dụng</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script th:src="@{/js/script.js}"></script>
+    
+    <!-- Close dropdowns when clicking outside -->
+    <script>
+        document.addEventListener('click', function(e) {
+            const dropdowns = document.querySelectorAll('.dropdown-menu');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.parentElement.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html class="light" lang="vi" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, activePage, content)">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title th:replace="${title}">User Panel</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "success": "#10b981",
+                        "warning": "#f59e0b",
+                        "danger": "#ef4444",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Chatbot animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-slideUp {
+            animation: slideUp 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/user-sidebar :: sidebar(${activePage})}"></div>
+    
+    <!-- Main Content -->
+    <main class="flex-1 ml-64">
+        <!-- Header -->
+        <header class="sticky top-0 z-10 flex items-center justify-between bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 px-6 py-4">
+            <div class="flex items-center gap-4">
+                <h1 class="text-lg font-semibold text-gray-900 dark:text-white" th:text="${pageTitle ?: 'Trang chủ'}">Trang chủ</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-lg">person</span>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" th:text="${session.username ?: 'User'}">User</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Page Content -->
+        <div class="p-6">
+            <div th:replace="${content}">Nội dung trang</div>
+        </div>
+    </main>
+</div>
+
+<!-- Chatbot Script -->
+<script th:src="@{/js/chatbot.js}"></script>
+</body>
+</html>

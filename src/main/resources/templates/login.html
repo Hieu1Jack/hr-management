@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - HR Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex min-h-screen items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="mb-8 text-center">
+                <span class="material-symbols-outlined text-primary text-5xl inline-block">lock</span>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mt-4">Đăng Nhập</h1>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">Hệ thống quản lý nhân sự</p>
+            </div>
+
+            <!-- Error Message -->
+            <div th:if="${param.error}" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <span class="material-symbols-outlined align-middle mr-2">error</span>
+                Tên đăng nhập hoặc mật khẩu không chính xác.
+            </div>
+            
+            <!-- Logout Message -->
+            <div th:if="${param.logout}" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                <span class="material-symbols-outlined align-middle mr-2">check_circle</span>
+                Bạn đã đăng xuất thành công.
+            </div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post" class="space-y-6 bg-white dark:bg-background-dark p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                <!-- Username -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tên Đăng Nhập</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2">
+                            <span class="material-symbols-outlined text-gray-400 text-lg">person</span>
+                        </span>
+                        <input type="text" name="username" required autofocus class="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition" placeholder="Nhập tên đăng nhập">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mật Khẩu</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2">
+                            <span class="material-symbols-outlined text-gray-400 text-lg">lock</span>
+                        </span>
+                        <input type="password" name="password" required class="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition" placeholder="Nhập mật khẩu">
+                    </div>
+                </div>
+
+                <!-- Remember & Forgot -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" name="remember-me" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Ghi nhớ tôi</span>
+                    </label>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2">
+                    <span>Đăng Nhập</span>
+                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                </button>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white dark:bg-background-dark text-gray-500 dark:text-gray-400">Hoặc</span>
+                    </div>
+                </div>
+
+                <!-- Quick Access -->
+                <div class="grid grid-cols-2 gap-3">
+                    <a th:href="@{/admin}" class="flex items-center justify-center gap-2 p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="text-sm font-medium">Admin</span>
+                    </a>
+                    <a th:href="@{/}" class="flex items-center justify-center gap-2 p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                        <span class="material-symbols-outlined">home</span>
+                        <span class="text-sm font-medium">Trang Chủ</span>
+                    </a>
+                </div>
+            </form>
+
+            <!-- Footer Info -->
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm mt-6">
+                Demo: <span class="font-mono text-gray-700 dark:text-gray-300">admin / 123456</span>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

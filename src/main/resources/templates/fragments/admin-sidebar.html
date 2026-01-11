@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- Admin Sidebar Fragment -->
+<aside th:fragment="sidebar(activePage)" class="flex h-screen min-h-screen flex-col border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark w-64 p-4 sticky top-0">
+    <div class="flex flex-col gap-4 flex-1">
+        <div class="flex items-center gap-3 p-2">
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-primary/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary">admin_panel_settings</span>
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-[#111418] dark:text-white text-base font-medium leading-normal">Admin HR</h1>
+                <p class="text-[#617589] dark:text-gray-400 text-sm font-normal leading-normal" sec:authentication="name">admin@company.com</p>
+            </div>
+        </div>
+        <nav class="flex flex-col gap-1">
+            <!-- Dashboard -->
+            <a th:classappend="${activePage == 'dashboard'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" 
+               href="/admin/dashboard">
+                <span class="material-symbols-outlined" th:styleappend="${activePage == 'dashboard'} ? 'font-variation-settings: FILL 1;' : ''">dashboard</span>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            
+            <!-- Người dùng - Chỉ ADMIN -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activePage == 'users'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" 
+               href="/admin/users">
+                <span class="material-symbols-outlined" th:styleappend="${activePage == 'users'} ? 'font-variation-settings: FILL 1;' : ''">person</span>
+                <span class="text-sm font-medium">Người dùng</span>
+            </a>
+            
+            <!-- Phân quyền - Chỉ ADMIN -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activePage == 'roles'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" 
+               href="/admin/roles">
+                <span class="material-symbols-outlined" th:styleappend="${activePage == 'roles'} ? 'font-variation-settings: FILL 1;' : ''">shield_person</span>
+                <span class="text-sm font-medium">Phân quyền</span>
+            </a>
+            
+            <!-- Nhân viên - Chỉ ADMIN -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activePage == 'employees'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" 
+               href="/admin/employees">
+                <span class="material-symbols-outlined" th:styleappend="${activePage == 'employees'} ? 'font-variation-settings: FILL 1;' : ''">group</span>
+                <span class="text-sm font-medium">Nhân viên</span>
+            </a>
+            
+            <!-- Phòng ban - Chỉ ADMIN -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activePage == 'departments'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" 
+               href="/admin/departments">
+                <span class="material-symbols-outlined" th:styleappend="${activePage == 'departments'} ? 'font-variation-settings: FILL 1;' : ''">apartment</span>
+                <span class="text-sm font-medium">Phòng ban</span>
+            </a>
+            
+            <!-- Chức vụ - Chỉ ADMIN -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activePage == 'positions'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" 
+               href="/admin/positions">
+                <span class="material-symbols-outlined" th:styleappend="${activePage == 'positions'} ? 'font-variation-settings: FILL 1;' : ''">work</span>
+                <span class="text-sm font-medium">Chức vụ</span>
+            </a>
+            
+            <!-- Hợp đồng - Chỉ ADMIN -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activePage == 'contracts'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" 
+               href="/admin/contracts">
+                <span class="material-symbols-outlined" th:styleappend="${activePage == 'contracts'} ? 'font-variation-settings: FILL 1;' : ''">description</span>
+                <span class="text-sm font-medium">Hợp đồng</span>
+            </a>
+            
+            <!-- Nghỉ phép - ADMIN, GIAM_DOC, TRUONG_PHONG -->
+            <div sec:authorize="hasAnyRole('ADMIN', 'GIAM_DOC', 'TRUONG_PHONG')" class="flex flex-col">
+                <div th:classappend="${activePage == 'leaves' or activePage == 'leaves-list' or activePage == 'leaves-approve'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+                     class="flex items-center justify-between px-3 py-2 rounded-lg transition-colors cursor-pointer"
+                     onclick="toggleSubmenu('leaves-submenu', 'leaves-arrow')">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined" th:styleappend="${activePage == 'leaves' or activePage == 'leaves-list' or activePage == 'leaves-approve'} ? 'font-variation-settings: FILL 1;' : ''">event_available</span>
+                        <span class="text-sm font-medium">Nghỉ phép</span>
+                    </div>
+                    <span id="leaves-arrow" class="material-symbols-outlined text-lg transition-transform" 
+                          th:classappend="${activePage == 'leaves' or activePage == 'leaves-list' or activePage == 'leaves-approve'} ? 'rotate-180' : ''">expand_more</span>
+                </div>
+                <div id="leaves-submenu" class="flex flex-col ml-6 mt-1 gap-1"
+                     th:classappend="${activePage == 'leaves' or activePage == 'leaves-list' or activePage == 'leaves-approve'} ? '' : 'hidden'">
+                    <a th:classappend="${activePage == 'leaves-approve'} ? 'text-primary font-medium' : 'text-[#617589] dark:text-gray-400 hover:text-primary'" 
+                       class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors" 
+                       href="/admin/leaves">
+                        <span class="material-symbols-outlined text-lg">task_alt</span>
+                        Duyệt nghỉ phép
+                    </a>
+                    <a th:classappend="${activePage == 'leaves-list'} ? 'text-primary font-medium' : 'text-[#617589] dark:text-gray-400 hover:text-primary'" 
+                       class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors" 
+                       href="/admin/leaves/approved">
+                        <span class="material-symbols-outlined text-lg">list_alt</span>
+                        Danh sách nghỉ phép
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Lương - ADMIN, KE_TOAN_TRUONG, KE_TOAN -->
+            <div sec:authorize="hasAnyRole('ADMIN', 'KE_TOAN_TRUONG', 'KE_TOAN')" class="flex flex-col">
+                <div th:classappend="${activePage == 'salary' or activePage == 'salary-calc' or activePage == 'salary-approve'} ? 'bg-primary/10 text-primary' : 'text-[#617589] dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'" 
+                     class="flex items-center justify-between px-3 py-2 rounded-lg transition-colors cursor-pointer"
+                     onclick="toggleSubmenu('salary-submenu', 'salary-arrow')">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined" th:styleappend="${activePage == 'salary' or activePage == 'salary-calc' or activePage == 'salary-approve'} ? 'font-variation-settings: FILL 1;' : ''">payments</span>
+                        <span class="text-sm font-medium">Lương</span>
+                    </div>
+                    <span id="salary-arrow" class="material-symbols-outlined text-lg transition-transform"
+                          th:classappend="${activePage == 'salary' or activePage == 'salary-calc' or activePage == 'salary-approve'} ? 'rotate-180' : ''">expand_more</span>
+                </div>
+                <div id="salary-submenu" class="flex flex-col ml-6 mt-1 gap-1"
+                     th:classappend="${activePage == 'salary' or activePage == 'salary-calc' or activePage == 'salary-approve'} ? '' : 'hidden'">
+                    <a th:classappend="${activePage == 'salary-calc'} ? 'text-primary font-medium' : 'text-[#617589] dark:text-gray-400 hover:text-primary'" 
+                       class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors" 
+                       href="/admin/salary">
+                        <span class="material-symbols-outlined text-lg">calculate</span>
+                        Tính lương
+                    </a>
+                    <a th:classappend="${activePage == 'salary-approve'} ? 'text-primary font-medium' : 'text-[#617589] dark:text-gray-400 hover:text-primary'" 
+                       class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors" 
+                       href="/admin/salary/approved">
+                        <span class="material-symbols-outlined text-lg">fact_check</span>
+                        Duyệt lương
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- Logout -->
+    <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-[#617589] dark:text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 transition-colors">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="text-sm font-medium">Đăng xuất</span>
+            </button>
+        </form>
+    </div>
+    
+    <script>
+        function toggleSubmenu(submenuId, arrowId) {
+            const submenu = document.getElementById(submenuId);
+            const arrow = document.getElementById(arrowId);
+            submenu.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+    </script>
+</aside>
+
+</html>

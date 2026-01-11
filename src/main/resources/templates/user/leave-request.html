@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{user-layout :: layout(~{::title}, 'leaves', ~{::content})}">
+<head>
+    <title>Nghỉ phép</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Nghỉ phép</h1>
+            <p class="text-gray-500 mt-1">Quản lý đơn xin nghỉ phép của bạn.</p>
+        </div>
+        <button onclick="document.getElementById('leaveModal').classList.remove('hidden')" 
+                class="flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90">
+            <span class="material-symbols-outlined text-lg">add</span>
+            Tạo đơn nghỉ
+        </button>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${successMessage}" class="mb-4 flex items-center gap-3 rounded-lg bg-green-50 border border-green-200 p-4 text-green-700">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="mb-4 flex items-center gap-3 rounded-lg bg-red-50 border border-red-200 p-4 text-red-700">
+        <span class="material-symbols-outlined">error</span>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-100 dark:border-slate-700">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-blue-600 text-2xl">beach_access</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" th:text="${remainingLeaves ?: 12}">12</p>
+                    <p class="text-sm text-gray-500">Ngày phép còn lại</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-100 dark:border-slate-700">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-yellow-600 text-2xl">pending</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" th:text="${pendingCount ?: 0}">0</p>
+                    <p class="text-sm text-gray-500">Đang chờ duyệt</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-100 dark:border-slate-700">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                    <span class="material-symbols-outlined text-green-600 text-2xl">check_circle</span>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white" th:text="${approvedCount ?: 0}">0</p>
+                    <p class="text-sm text-gray-500">Đã được duyệt</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave History -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+        <div class="p-5 border-b border-gray-100 dark:border-slate-700">
+            <h2 class="font-semibold text-gray-900 dark:text-white">Lịch sử nghỉ phép</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-[#1e2a3b] text-white text-sm">
+                        <th class="px-4 py-3 text-left font-medium">LOẠI NGHỈ</th>
+                        <th class="px-4 py-3 text-center font-medium">TỪ NGÀY</th>
+                        <th class="px-4 py-3 text-center font-medium">ĐẾN NGÀY</th>
+                        <th class="px-4 py-3 text-center font-medium">SỐ NGÀY</th>
+                        <th class="px-4 py-3 text-left font-medium">LÝ DO</th>
+                        <th class="px-4 py-3 text-center font-medium">TRẠNG THÁI</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
+                    <tr th:each="leave : ${leaves}" class="hover:bg-gray-50 dark:hover:bg-slate-700">
+                        <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white" th:text="${leave.leaveType}">Nghỉ phép năm</td>
+                        <td class="px-4 py-3 text-center text-sm text-gray-600" th:text="${#temporals.format(leave.startDate, 'dd/MM/yyyy')}">01/01/2025</td>
+                        <td class="px-4 py-3 text-center text-sm text-gray-600" th:text="${#temporals.format(leave.endDate, 'dd/MM/yyyy')}">02/01/2025</td>
+                        <td class="px-4 py-3 text-center text-sm text-gray-600" th:text="${leave.totalDays}">2</td>
+                        <td class="px-4 py-3 text-sm text-gray-600" th:text="${#strings.abbreviate(leave.reason, 30)}">Việc gia đình</td>
+                        <td class="px-4 py-3 text-center">
+                            <span th:if="${leave.status == 'Pending'}" class="inline-flex px-2.5 py-0.5 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Chờ duyệt</span>
+                            <span th:if="${leave.status == 'Approved'}" class="inline-flex px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-800">Đã duyệt</span>
+                            <span th:if="${leave.status == 'Rejected'}" class="inline-flex px-2.5 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800">Từ chối</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${leaves == null or #lists.isEmpty(leaves)}" class="p-12 text-center">
+            <span class="material-symbols-outlined text-5xl text-gray-300 mb-3">event_busy</span>
+            <p class="text-gray-500">Chưa có đơn nghỉ phép nào</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="leaveModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 w-full max-w-md mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Tạo đơn nghỉ phép</h3>
+                <button onclick="document.getElementById('leaveModal').classList.add('hidden')" class="p-1 text-gray-500 hover:text-gray-700">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form th:action="@{/user/leaves/request}" method="post" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Loại nghỉ phép</label>
+                    <select name="leaveType" required class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm">
+                        <option value="Nghỉ phép năm">Nghỉ phép năm</option>
+                        <option value="Nghỉ ốm">Nghỉ ốm</option>
+                        <option value="Nghỉ không lương">Nghỉ không lương</option>
+                        <option value="Nghỉ việc riêng">Nghỉ việc riêng</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Từ ngày</label>
+                        <input type="date" name="startDate" required class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm"/>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Đến ngày</label>
+                        <input type="date" name="endDate" required class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm"/>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lý do</label>
+                    <textarea name="reason" rows="3" required class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm" placeholder="Nhập lý do xin nghỉ..."></textarea>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="document.getElementById('leaveModal').classList.add('hidden')" 
+                            class="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
+                        Hủy
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90">
+                        Gửi đơn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

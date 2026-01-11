@@ -1,0 +1,4 @@
+Họ tên (*),Email (*),Số điện thoại (*),Giới tính,Địa chỉ,CCCD,Ngày sinh (yyyy-MM-dd),Ngày vào làm (yyyy-MM-dd),Lương cơ bản,Phòng ban,Chức vụ,Vai trò đặc biệt
+Nguyễn Văn A,nguyenvana@company.com,0912345678,Nam,Hà Nội,001234567890,1995-05-15,2026-01-15,10000000,Phòng kinh Doanh,Nhân viên,
+Trần Thị B,tranthib@company.com,0987654321,Nữ,Nghệ An,002345678901,1998-08-20,2026-01-15,12000000,Phòng kế toán,Nhân viên,KE_TOAN
+Lê Văn C,levanc@company.com,0909123456,Nam,Vinh,003456789012,1992-03-10,2026-01-15,20000000,Phòng kế toán,Kế toán trưởng,KE_TOAN_TRUONG

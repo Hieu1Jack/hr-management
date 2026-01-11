@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: layout(~{::title}, 'salary-calc', ~{::content})}">
+<head>
+    <title>Tính Lương</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-[#111418] dark:text-white">Tính lương theo phòng ban</h1>
+        <p class="text-[#617589] dark:text-gray-400 text-sm mt-1">Chọn phòng ban và thời gian để tính lương cho nhân viên.</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <form id="filterForm" class="contents">
+                <div>
+                    <label class="block text-sm font-medium text-[#111418] dark:text-white mb-2">Phòng ban</label>
+                    <select name="departmentId" id="departmentSelect" onchange="this.form.submit()" 
+                            class="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-sm">
+                        <option th:each="dept : ${departments}" th:value="${dept.departmentId}" th:text="${dept.departmentName}" 
+                                th:selected="${selectedDepartmentId != null and selectedDepartmentId == dept.departmentId}">Phòng ban</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#111418] dark:text-white mb-2">Tháng</label>
+                    <select name="month" id="monthSelect" onchange="this.form.submit()"
+                            class="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-sm">
+                        <option th:each="m : ${#numbers.sequence(1, 12)}" th:value="${m}" th:text="'Tháng ' + ${m}" th:selected="${m == month}">Tháng 1</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#111418] dark:text-white mb-2">Năm</label>
+                    <select name="year" id="yearSelect" onchange="this.form.submit()"
+                            class="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-sm">
+                        <option th:each="y : ${#numbers.sequence(2020, 2030)}" th:value="${y}" th:text="${y}" th:selected="${y == year}">2025</option>
+                    </select>
+                </div>
+            </form>
+            <form th:action="@{/admin/salary/calculate-all}" method="post">
+                <input type="hidden" name="departmentId" th:value="${selectedDepartmentId}"/>
+                <input type="hidden" name="month" th:value="${month}"/>
+                <input type="hidden" name="year" th:value="${year}"/>
+                <button type="submit" th:disabled="${employees == null or employees.isEmpty()}" 
+                        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span class="material-symbols-outlined text-lg">calculate</span>
+                    Tính lương
+                </button>
+            </form>
+        </div>
+        
+        <!-- Thông tin đã tính lương -->
+        <div th:if="${calculatedCount != null && calculatedCount > 0}" class="mt-4 flex items-center gap-2 text-sm">
+            <span class="material-symbols-outlined text-green-500">check_circle</span>
+            <span class="text-gray-600 dark:text-gray-400">
+                Đã tính lương cho <span class="font-semibold text-green-600" th:text="${calculatedCount}">0</span>/<span th:text="${totalEmployees}">0</span> nhân viên trong tháng <span th:text="${month}">1</span>/<span th:text="${year}">2025</span>.
+                <a th:href="@{/admin/salary/approved(departmentId=${selectedDepartmentId}, month=${month}, year=${year})}" class="text-primary hover:underline ml-1">Xem danh sách →</a>
+            </span>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-[#1e2a3b] text-white text-sm">
+                        <th class="px-4 py-3 text-left font-medium">STT</th>
+                        <th class="px-4 py-3 text-left font-medium">HỌ VÀ TÊN</th>
+                        <th class="px-4 py-3 text-left font-medium">CHỨC VỤ</th>
+                        <th class="px-4 py-3 text-center font-medium">NGÀY CÔNG</th>
+                        <th class="px-4 py-3 text-center font-medium">GIỜ TĂNG CA</th>
+                        <th class="px-4 py-3 text-right font-medium">LƯƠNG CƠ BẢN</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    <tr th:each="emp, iter : ${employees}" class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        <td class="px-4 py-3 text-sm text-[#617589]" th:text="${iter.index + 1}">1</td>
+                        <td class="px-4 py-3">
+                            <p class="font-medium text-[#111418] dark:text-white text-sm" th:text="${emp.employeeName}">Nguyễn Văn A</p>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-[#617589]" th:text="${emp.position?.positionName ?: 'Chưa có'}">Nhân viên</td>
+                        <td class="px-4 py-3 text-center text-sm text-[#111418] dark:text-white" 
+                            th:text="${attendanceStats[emp.employeeId]?.get('workDays') ?: 0}">22</td>
+                        <td class="px-4 py-3 text-center text-sm text-[#111418] dark:text-white" 
+                            th:text="${attendanceStats[emp.employeeId]?.get('overtimeHours') ?: 0}">10</td>
+                        <td class="px-4 py-3 text-right text-sm font-medium text-primary" 
+                            th:text="${emp.position?.baseSalary != null ? #numbers.formatDecimal(emp.position.baseSalary, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : 'Chưa thiết lập'}">15,000,000 VNĐ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Empty State -->
+        <div th:if="${employees == null or employees.isEmpty()}" class="p-12 text-center">
+            <span class="material-symbols-outlined text-5xl text-green-300 mb-3">task_alt</span>
+            <p class="text-gray-500" th:if="${calculatedCount != null && calculatedCount > 0}">Tất cả nhân viên đã được tính lương tháng này!</p>
+            <p class="text-gray-500" th:unless="${calculatedCount != null && calculatedCount > 0}">Vui lòng chọn phòng ban để xem danh sách nhân viên</p>
+            <a th:if="${calculatedCount != null && calculatedCount > 0}" 
+               th:href="@{/admin/salary/approved(departmentId=${selectedDepartmentId}, month=${month}, year=${year})}" 
+               class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90">
+                <span class="material-symbols-outlined text-lg">visibility</span>
+                Xem danh sách lương
+            </a>
+        </div>
+        
+        <!-- Pagination -->
+        <div th:if="${employees != null and !employees.isEmpty()}" class="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-500" th:text="'Hiển thị 1 đến ' + ${#lists.size(employees)} + ' của ' + ${#lists.size(employees)} + ' nhân viên'">Hiển thị 1 đến 8 của 56 kết quả</p>
+            <div class="flex items-center gap-1">
+                <button class="px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded">Trước</button>
+                <button class="px-3 py-1.5 text-sm bg-primary text-white rounded">1</button>
+                <button class="px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-100 rounded">Sau</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

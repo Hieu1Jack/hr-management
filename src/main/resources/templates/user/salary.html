@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{user-layout :: layout(~{::title}, 'salary', ~{::content})}">
+<head>
+    <title>Phiếu lương</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Phiếu lương</h1>
+        <p class="text-gray-500 mt-1">Xem chi tiết lương hàng tháng của bạn.</p>
+    </div>
+
+    <!-- Salary Table -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-100 dark:border-slate-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-[#1e2a3b] text-white text-sm">
+                        <th class="px-4 py-3 text-left font-medium">THÁNG/NĂM</th>
+                        <th class="px-4 py-3 text-center font-medium">NGÀY CÔNG</th>
+                        <th class="px-4 py-3 text-right font-medium">LƯƠNG CB</th>
+                        <th class="px-4 py-3 text-right font-medium">TĂNG CA</th>
+                        <th class="px-4 py-3 text-right font-medium">THƯỞNG</th>
+                        <th class="px-4 py-3 text-right font-medium">KHẤU TRỪ</th>
+                        <th class="px-4 py-3 text-right font-medium">THỰC NHẬN</th>
+                        <th class="px-4 py-3 text-center font-medium">CHI TIẾT</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-slate-700">
+                    <tr th:each="salary : ${salaries}" class="hover:bg-gray-50 dark:hover:bg-slate-700">
+                        <td class="px-4 py-3">
+                            <p class="font-medium text-gray-900 dark:text-white text-sm" th:text="'Tháng ' + ${salary.month} + '/' + ${salary.year}">Tháng 1/2025</p>
+                        </td>
+                        <td class="px-4 py-3 text-center text-sm text-gray-600" th:text="${salary.workDays}">22</td>
+                        <td class="px-4 py-3 text-right text-sm text-gray-600" th:text="${#numbers.formatDecimal(salary.baseSalary, 0, 'COMMA', 0, 'POINT')}">15,000,000</td>
+                        <td class="px-4 py-3 text-right text-sm text-green-600" th:text="${#numbers.formatDecimal(salary.overtimePay, 0, 'COMMA', 0, 'POINT')}">2,000,000</td>
+                        <td class="px-4 py-3 text-right text-sm text-green-600" th:text="${#numbers.formatDecimal(salary.bonus ?: 0, 0, 'COMMA', 0, 'POINT')}">500,000</td>
+                        <td class="px-4 py-3 text-right text-sm text-red-600" th:text="${#numbers.formatDecimal(salary.deductions ?: 0, 0, 'COMMA', 0, 'POINT')}">200,000</td>
+                        <td class="px-4 py-3 text-right text-sm font-bold text-primary" th:text="${#numbers.formatDecimal(salary.totalSalary, 0, 'COMMA', 0, 'POINT') + ' đ'}">17,300,000 đ</td>
+                        <td class="px-4 py-3 text-center">
+                            <a th:href="@{/user/salary/detail/{id}(id=${salary.salaryId})}" class="p-1.5 text-primary hover:bg-primary/10 rounded-lg inline-flex" title="Xem chi tiết">
+                                <span class="material-symbols-outlined text-lg">visibility</span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Empty State -->
+        <div th:if="${salaries == null or #lists.isEmpty(salaries)}" class="p-12 text-center">
+            <span class="material-symbols-outlined text-5xl text-gray-300 mb-3">payments</span>
+            <p class="text-gray-500">Chưa có phiếu lương nào</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

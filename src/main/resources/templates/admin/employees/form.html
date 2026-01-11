@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: layout(~{::title}, 'employees', ~{::content})}">
+<head>
+    <title th:text="${employee?.employeeId} == null ? 'Thêm Nhân viên' : 'Sửa Nhân viên'">Form Nhân viên</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="flex flex-wrap justify-between gap-3 pb-4">
+        <div class="flex min-w-72 flex-col gap-2">
+            <h1 class="text-[#111418] dark:text-white text-3xl font-bold leading-tight" th:text="${employee?.employeeId} == null ? 'Thêm Nhân viên Mới' : 'Sửa thông tin Nhân viên'">Header</h1>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-slate-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <form th:action="${employee?.employeeId} != null ? @{/admin/employees/update} : @{/admin/employees/create}" th:object="${employee}" method="post" class="flex flex-col gap-8">
+            
+            <input type="hidden" th:field="*{employeeId}" th:if="${employee?.employeeId} != null"/>
+            
+            <div>
+                <h2 class="text-[#111418] dark:text-white text-xl font-bold pb-3 border-b border-gray-200">Thông tin Cá nhân</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-5">
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Mã Nhân viên</label>
+                        <input class="w-full rounded-lg border border-gray-300 bg-gray-100 h-11 px-4 text-gray-500" th:field="*{MNV}" readonly/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Họ và Tên <span class="text-red-500">*</span></label>
+                        <input class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" th:field="*{employeeName}" required placeholder="Nhập họ tên"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Email <span class="text-red-500">*</span></label>
+                        <input class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" type="email" th:field="*{email}" required placeholder="email@company.com"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Số điện thoại</label>
+                        <input class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" th:field="*{phone}"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Ngày sinh</label>
+                        <input class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" type="date" th:field="*{dateOfBirth}"/>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Giới tính</label>
+                        <select class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" th:field="*{gender}">
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col sm:col-span-2">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Địa chỉ</label>
+                        <input class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" th:field="*{address}"/>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-[#111418] dark:text-white text-xl font-bold pb-3 border-b border-gray-200">Công việc & Chức vụ</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-5">
+                    
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Phòng ban <span class="text-red-500">*</span></label>
+                        <select name="deptId" class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" required>
+                            <option value="">-- Chọn phòng ban --</option>
+                            <option th:each="dept : ${departments}" 
+                                    th:value="${dept.departmentId}" 
+                                    th:text="${dept.departmentName}"
+                                    th:selected="${employee.department != null && employee.department.departmentId == dept.departmentId}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Chức vụ <span class="text-red-500">*</span></label>
+                        <select th:field="*{position}" class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" required>
+                            <option value="">-- Chọn chức vụ --</option>
+                            <option th:each="pos : ${positions}" th:value="${pos.positionId}" th:text="${pos.positionName}"></option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Vai trò hệ thống</label>
+                        <select th:field="*{specialRole}" class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="">Nhân viên thường</option>
+                            <option value="TRUONG_PHONG">Trưởng phòng</option>
+                            <option value="KE_TOAN_TRUONG">Kế toán trưởng</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Lương cơ bản</label>
+                        <input type="number" class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" th:field="*{basicSalary}"/>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium pb-2 text-gray-700 dark:text-gray-300">Ngày vào làm</label>
+                        <input type="date" class="w-full rounded-lg border border-gray-300 h-11 px-4 focus:ring-2 focus:ring-blue-500 outline-none" th:field="*{joinDate}"/>
+                    </div>
+                    
+                     <div class="flex flex-col justify-end">
+                        <label class="flex items-center gap-2 text-sm font-medium h-11 cursor-pointer">
+                            <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-5 h-5" th:field="*{isActive}"/>
+                            <span class="text-gray-700 dark:text-gray-300">Kích hoạt tài khoản</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                <a class="flex items-center justify-center rounded-lg h-10 px-6 bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition-colors" th:href="@{/admin/employees}">Hủy</a>
+                <button type="submit" class="flex items-center justify-center rounded-lg h-10 px-6 bg-[#137fec] text-white font-bold hover:bg-blue-600 transition-colors shadow-sm">
+                    <span th:text="${employee?.employeeId} == null ? 'Tạo Nhân viên' : 'Lưu thay đổi'">Lưu</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

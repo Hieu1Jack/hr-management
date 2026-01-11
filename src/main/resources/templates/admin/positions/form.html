@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin-layout :: layout(~{::title}, 'positions', ~{::content})}">
+<head>
+    <title th:text="${position?.positionId} == null ? 'Thêm Chức Vụ' : 'Sửa Chức Vụ'">Thêm Chức Vụ</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Page Header -->
+    <div class="flex flex-wrap justify-between gap-3 pb-4">
+        <div class="flex min-w-72 flex-col gap-2">
+            <h1 class="text-[#111418] dark:text-white text-3xl font-bold leading-tight" th:text="${position?.positionId} == null ? 'Thêm Chức Vụ Mới' : 'Sửa thông tin Chức Vụ'">Thêm Chức Vụ Mới</h1>
+            <p class="text-[#617589] dark:text-gray-400 text-base">Điền thông tin chi tiết để tạo chức vụ mới.</p>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-slate-800/50 p-6 rounded-xl shadow-sm">
+        <form th:action="${position?.positionId} != null ? @{/admin/positions/update} : @{/admin/positions/create}" th:object="${position}" method="post" class="flex flex-col gap-6">
+            <input type="hidden" th:field="*{positionId}" th:if="${position?.positionId} != null"/>
+
+            <div>
+                <h2 class="text-[#111418] dark:text-white text-xl font-bold pb-3 border-b border-gray-200 dark:border-gray-700">Thông Tin Chức Vụ</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-5">
+                    <!-- Position Name -->
+                    <div class="flex flex-col">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Tên Chức Vụ <span class="text-red-500">*</span></label>
+                        <input class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-11 px-4 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" placeholder="Nhập tên chức vụ" th:field="*{positionName}" required/>
+                    </div>
+
+                    <!-- Base Salary -->
+                    <div class="flex flex-col">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Lương Cơ Bản (VNĐ) <span class="text-red-500">*</span></label>
+                        <input type="number" step="100000" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-11 px-4 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" placeholder="VD: 5000000" th:field="*{baseSalary}" required/>
+                    </div>
+
+                    <!-- Coefficient -->
+                    <div class="flex flex-col">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Hệ Số Lương</label>
+                        <input type="number" step="0.01" min="1" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-11 px-4 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" placeholder="VD: 1.0" th:field="*{coefficient}"/>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="flex flex-col">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Trạng Thái</label>
+                        <select class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-11 px-4 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" th:field="*{isActive}">
+                            <option value="true">Hoạt động</option>
+                            <option value="false">Không hoạt động</option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="md:col-span-2">
+                        <label class="text-[#111418] dark:text-white text-sm font-medium pb-2">Mô Tả</label>
+                        <textarea class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark h-24 px-4 py-3 text-[#111418] dark:text-white focus:ring-2 focus:ring-primary/50" placeholder="Nhập mô tả chi tiết" th:field="*{description}"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <a class="flex items-center justify-center rounded-lg h-10 px-6 bg-gray-100 dark:bg-gray-700 text-[#111418] dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" th:href="@{/admin/positions}">Hủy</a>
+                <button type="submit" class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+                    <span th:text="${position?.positionId} == null ? 'Tạo Chức Vụ' : 'Lưu Chức Vụ'">Lưu Chức Vụ</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
